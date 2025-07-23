@@ -63,7 +63,7 @@ export class Game {
         }
         const randomTile = freeTiles[getRandomIntInclusive(0, freeTiles.length - 1)];
         const randomValue = Math.random();
-        if (randomValue < 0.2) {
+        if (randomValue < 0.1) {
             this.state[randomTile.i][randomTile.j] = 4;
         }
         else {
@@ -138,6 +138,7 @@ export class Game {
      */
     private processMerges(selection: Tile[]): boolean {
         let somethingHappened = false;
+        let preventMergeBefore = -1;
         for (let i = 0; i < selection.length - 1; i++) {
             const iTile = selection[i];
             if (this.state[iTile.i][iTile.j] === 0) {
@@ -148,10 +149,11 @@ export class Game {
                 if (this.state[iTile.i][iTile.j] === 0 || this.state[jTile.i][jTile.j] === 0) {
                     continue;
                 }
-                if (this.canMerge(this.state[iTile.i][iTile.j], this.state[jTile.i][jTile.j])) {
+                if (this.canMerge(this.state[iTile.i][iTile.j], this.state[jTile.i][jTile.j]) && i > preventMergeBefore) {
                     this.state[iTile.i][iTile.j] = this.state[iTile.i][iTile.j] + this.state[jTile.i][jTile.j];
                     this.state[jTile.i][jTile.j] = 0;
                     somethingHappened = true;
+                    preventMergeBefore = i;
                 }
                 else {
                     break;
@@ -221,11 +223,11 @@ export class Game {
         }
         return somethingHappened;
     }
-    private stepRight(): boolean {
+    stepRight(): boolean {
         let somethingHappened = false;
         for (let i = 0; i < this.state.length; i++) {
             // Process tiles that can merge
-            if (this.processMerges(this.selectRow(i))) {
+            if (this.processMerges(this.selectRow(i).reverse())) {
                 somethingHappened = true;
             }
             // Then, step through each tile in this row and push as far right as possible
@@ -245,7 +247,7 @@ export class Game {
         }
         return somethingHappened;
     }
-    private stepUp(): boolean {
+    stepUp(): boolean {
         let somethingHappened = false;
         for (let i = 0; i < this.state[0].length; i++) {
             const selection = this.selectColumn(i);
@@ -256,7 +258,7 @@ export class Game {
         }
         return somethingHappened;
     }
-    private stepDown(): boolean {
+    stepDown(): boolean {
         let somethingHappened = false;
         for (let i = 0; i < this.state[0].length; i++) {
             const selection = this.selectColumn(i).reverse();
