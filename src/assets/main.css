@@ -110,3 +110,19 @@
 .fw-bold {
     font-weight: bold;
 }
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.top-0 {
+    top: 0;
+}
+
+.left-0 {
+    left: 0;
+}
