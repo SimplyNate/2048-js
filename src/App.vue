@@ -46,12 +46,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="container-fluid text-center text-white">
-        <h2>Simply 2048</h2>
-        <div>Last Move: {{ lastMove }}</div>
-        <div>Game State: {{ game.currentGameState }}</div>
-        <button @click="resetGame">Reset</button>
-        <div class="mt-5 fs-2 fw-bold" style="border: 1px solid green;">
+    <div class="container-fluid text-center text-white d-flex flex-column vw-100 vh-100">
+        <div>
+            <h2>Simply 2048</h2>
+            <div>Last Move: {{ lastMove }}</div>
+            <div>Game State: {{ game.currentGameState }}</div>
+            <button @click="resetGame">Reset</button>
+        </div>
+        <div class="mt-5 fs-2 fw-bold flex-grow-1">
             <div class="d-flex justify-content-center position-relative" v-for="i in 4" :key="i">
                 <div class="border border-dark bg-0 w-5 position-relative">
                     <div :class="`position-absolute top-0 left-0 w-5 border border-dark bg-${game.state[i-1][0]}`" v-if="game.state[i-1][0] > 0">{{ game.state[i-1][0] }}</div>
@@ -63,7 +65,7 @@ onMounted(() => {
                     <div :class="`position-absolute top-0 left-0 w-5 border border-dark bg-${game.state[i-1][2]}`" v-if="game.state[i-1][2] > 0">{{ game.state[i-1][2] }}</div>
                 </div>
                 <div class="border border-dark bg-0 w-5 position-relative">
-                    <div :class="`position-absolute top-0 left-0 w-5 border border-dark bg-${game.state[i-1][3]}`" v-if="game.state[i-1][3] > 0">{{ game.state[i-1][3] }}</div>
+                    <div :class="`position-absolute top-0 left-0 w-100 border border-dark bg-${game.state[i-1][3]}`" v-if="game.state[i-1][3] > 0">{{ game.state[i-1][3] }}</div>
                 </div>
             </div>
             <!--
