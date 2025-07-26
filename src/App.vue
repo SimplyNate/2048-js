@@ -1,69 +1,77 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
-import { Game } from './game';
+import {type Direction, Game} from './game';
 
 const game = ref(new Game());
-const lastMove = ref<string>();
+const lastMove = ref<Direction>();
 const animating = ref(false);
 
 function resetGame() {
     game.value = new Game();
 }
 
-function wait() {
-    return new Promise(resolve => setTimeout(resolve, 500));
+function wait(): Promise<void> {
+    return new Promise(resolve => setTimeout(() => {
+        animating.value = false;
+        const tiles = [...document.getElementsByClassName('active-tile')].reverse();
+        for (const tile of tiles) {
+            tile.remove();
+        }
+        game.value.step(lastMove.value as Direction);
+        setTiles();
+        resolve();
+    }, 500));
 }
 
-function stepLeft() {
+function addAnimationClass() {
+    const tiles = document.getElementsByClassName('active-tile');
+    if (lastMove.value === 'left') {
+        for (const tile of tiles) {
+            tile.classList.add('move-left-1');
+        }
+    }
+}
+
+function step(direction: Direction) {
     if (animating.value) {
         return;
     }
     animating.value = true;
-    lastMove.value = 'left';
-    game.value.step('left');
+    lastMove.value = direction;
+    addAnimationClass();
     wait();
 }
-function stepRight() {
-    if (animating.value) {
-        return;
+
+function setTiles() {
+    for (let i = 0; i < game.value.state.length; i++) {
+        for (let j = 0; j < game.value.state[i].length; j++) {
+            const tile = document.getElementById(`row-${i}-${j}`) as HTMLElement;
+            if (game.value.state[i][j] > 0) {
+                const innerTile = document.createElement('div');
+                innerTile.classList.add(`bg-${game.value.state[i][j]}`, 'active-tile');
+                innerTile.innerText = game.value.state[i][j].toString();
+                tile.appendChild(innerTile);
+            }
+        }
     }
-    animating.value = true;
-    lastMove.value = 'right';
-    game.value.step('right');
-    wait();
-}
-function stepUp() {
-    if (animating.value) {
-        return;
-    }
-    lastMove.value = 'up';
-    game.value.step('up');
-    wait();
-}
-function stepDown() {
-    if (animating.value) {
-        return;
-    }
-    lastMove.value = 'down';
-    game.value.step('down');
-    wait();
 }
 
 onMounted(() => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
-            stepLeft();
+            step('left');
         }
         else if (e.key === 'ArrowRight') {
-            stepRight();
+            step('right');
         }
         else if (e.key === 'ArrowUp') {
-            stepUp();
+            step('up');
         }
         else if (e.key === 'ArrowDown') {
-            stepDown();
+            step('down');
         }
-    })
+    });
+    setTiles();
 });
 
 </script>
@@ -74,22 +82,12 @@ onMounted(() => {
             <h2>Simply 2048</h2>
             <div>Last Move: {{ lastMove }}</div>
             <div>Game State: {{ game.currentGameState }}</div>
+            <div>Animating: {{ animating }}</div>
             <button @click="resetGame">Reset</button>
         </div>
         <div class="mt-5 fs-2 fw-bold flex-grow-1">
-            <div class="d-flex justify-content-center position-relative" v-for="i in 4" :key="i">
-                <div class="border border-dark bg-0 w-5 position-relative">
-                    <div :class="`position-absolute top-0 left-0 w-5 border border-dark bg-${game.state[i-1][0]}`" v-if="game.state[i-1][0] > 0">{{ game.state[i-1][0] }}</div>
-                </div>
-                <div class="border border-dark bg-0 w-5 position-relative">
-                    <div :class="`position-absolute top-0 left-0 w-5 border border-dark bg-${game.state[i-1][1]}`" v-if="game.state[i-1][1] > 0">{{ game.state[i-1][1] }}</div>
-                </div>
-                <div class="border border-dark bg-0 w-5 position-relative">
-                    <div :class="`position-absolute top-0 left-0 w-5 border border-dark bg-${game.state[i-1][2]}`" v-if="game.state[i-1][2] > 0">{{ game.state[i-1][2] }}</div>
-                </div>
-                <div class="border border-dark bg-0 w-5 position-relative">
-                    <div :class="`position-absolute top-0 left-0 w-100 border border-dark bg-${game.state[i-1][3]}`" v-if="game.state[i-1][3] > 0">{{ game.state[i-1][3] }}</div>
-                </div>
+            <div class="d-flex justify-content-center position-relative" v-for="i in game.state.length" :key="i">
+                <div class="border border-dark bg-0 w-5 position-relative" :id="`row-${i-1}-${j-1}`" v-for="j in game.state[i-1].length" :key="j"></div>
             </div>
             <!--
             <div class="d-flex justify-content-center" v-for="i in 4" :key="i">
@@ -105,53 +103,44 @@ onMounted(() => {
     width: 5vw;
     height: 5vw;
     line-height: 5vw;
+    transition: transform 0.1s ease-out;
 }
+
 .move-left-1 {
     transform: translateX(-100%);
-    animation: 0.5s ease-in-out;
 }
 .move-left-2 {
     transform: translateX(-200%);
-    animation: 0.5s ease-in-out;
 }
 .move-left-3 {
     transform: translateX(-300%);
-    animation: 0.5s ease-in-out;
 }
 .move-right-1 {
     transform: translateX(100%);
-    animation: 0.5s ease-in-out;
 }
 .move-right-2 {
     transform: translateX(200%);
-    animation: 0.5s ease-in-out;
 }
 .move-right-3 {
     transform: translateX(300%);
-    animation: 0.5s ease-in-out;
 }
 .move-up-1 {
     transform: translateY(-100%);
-    animation: 0.5s ease-in-out;
 }
 .move-up-2 {
     transform: translateY(-200%);
-    animation: 0.5s ease-in-out;
 }
 .move-up-3 {
     transform: translateY(-300%);
-    animation: 0.5s ease-in-out;
 }
 .move-down-1 {
     transform: translateY(100%);
-    animation: 0.5s ease-in-out;
 }
 .move-down-2 {
     transform: translateY(200%);
-    animation: 0.5s ease-in-out;
 }
 .move-down-3 {
     transform: translateY(300%);
-    animation: 0.5s ease-in-out;
 }
+
 </style>
