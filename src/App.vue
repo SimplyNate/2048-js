@@ -4,26 +4,49 @@ import { Game } from './game';
 
 const game = ref(new Game());
 const lastMove = ref<string>();
+const animating = ref(false);
 
 function resetGame() {
     game.value = new Game();
 }
 
+function wait() {
+    return new Promise(resolve => setTimeout(resolve, 500));
+}
+
 function stepLeft() {
+    if (animating.value) {
+        return;
+    }
+    animating.value = true;
     lastMove.value = 'left';
     game.value.step('left');
+    wait();
 }
 function stepRight() {
+    if (animating.value) {
+        return;
+    }
+    animating.value = true;
     lastMove.value = 'right';
     game.value.step('right');
+    wait();
 }
 function stepUp() {
+    if (animating.value) {
+        return;
+    }
     lastMove.value = 'up';
     game.value.step('up');
+    wait();
 }
 function stepDown() {
+    if (animating.value) {
+        return;
+    }
     lastMove.value = 'down';
     game.value.step('down');
+    wait();
 }
 
 onMounted(() => {
@@ -82,5 +105,53 @@ onMounted(() => {
     width: 5vw;
     height: 5vw;
     line-height: 5vw;
+}
+.move-left-1 {
+    transform: translateX(-100%);
+    animation: 0.5s ease-in-out;
+}
+.move-left-2 {
+    transform: translateX(-200%);
+    animation: 0.5s ease-in-out;
+}
+.move-left-3 {
+    transform: translateX(-300%);
+    animation: 0.5s ease-in-out;
+}
+.move-right-1 {
+    transform: translateX(100%);
+    animation: 0.5s ease-in-out;
+}
+.move-right-2 {
+    transform: translateX(200%);
+    animation: 0.5s ease-in-out;
+}
+.move-right-3 {
+    transform: translateX(300%);
+    animation: 0.5s ease-in-out;
+}
+.move-up-1 {
+    transform: translateY(-100%);
+    animation: 0.5s ease-in-out;
+}
+.move-up-2 {
+    transform: translateY(-200%);
+    animation: 0.5s ease-in-out;
+}
+.move-up-3 {
+    transform: translateY(-300%);
+    animation: 0.5s ease-in-out;
+}
+.move-down-1 {
+    transform: translateY(100%);
+    animation: 0.5s ease-in-out;
+}
+.move-down-2 {
+    transform: translateY(200%);
+    animation: 0.5s ease-in-out;
+}
+.move-down-3 {
+    transform: translateY(300%);
+    animation: 0.5s ease-in-out;
 }
 </style>

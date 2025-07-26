@@ -13,13 +13,11 @@ export class Tile2 {
     i: number;
     j: number;
     value: number;
-    hasMergedThisStep: boolean;
 
     constructor(i: number, j: number, value: number) {
         this.i = i;
         this.j = j;
         this.value = value;
-        this.hasMergedThisStep = false;
     }
 }
 
@@ -268,5 +266,36 @@ export class Game {
             }
         }
         return somethingHappened;
+    }
+}
+
+export class GameCanvas {
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private game: Game;
+    private container: HTMLElement;
+    private tiles: Tile2[][];
+
+    constructor(container: HTMLElement, canvas?: HTMLCanvasElement) {
+        this.container = container;
+        if (canvas) {
+            this.canvas = canvas;
+        }
+        else {
+            this.canvas = document.createElement('canvas');
+            this.canvas.width = this.container.clientWidth;
+            this.canvas.height = this.container.clientHeight;
+            this.container.appendChild(this.canvas);
+        }
+        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        this.game = new Game();
+    }
+    drawBoard() {
+
+    }
+    drawTile() {}
+    drawTiles() {}
+    draw() {
+
     }
 }
