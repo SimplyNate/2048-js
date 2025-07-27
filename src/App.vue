@@ -103,44 +103,6 @@ onMounted(() => {
     width: 5vw;
     height: 5vw;
     line-height: 5vw;
-    transition: transform 0.1s ease-out;
-}
-
-.move-left-1 {
-    transform: translateX(-100%);
-}
-.move-left-2 {
-    transform: translateX(-200%);
-}
-.move-left-3 {
-    transform: translateX(-300%);
-}
-.move-right-1 {
-    transform: translateX(100%);
-}
-.move-right-2 {
-    transform: translateX(200%);
-}
-.move-right-3 {
-    transform: translateX(300%);
-}
-.move-up-1 {
-    transform: translateY(-100%);
-}
-.move-up-2 {
-    transform: translateY(-200%);
-}
-.move-up-3 {
-    transform: translateY(-300%);
-}
-.move-down-1 {
-    transform: translateY(100%);
-}
-.move-down-2 {
-    transform: translateY(200%);
-}
-.move-down-3 {
-    transform: translateY(300%);
 }
 
 </style>
