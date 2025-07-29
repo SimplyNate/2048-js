@@ -20,15 +20,30 @@ function wait(): Promise<void> {
         game.value.step(lastMove.value as Direction);
         setTiles();
         resolve();
-    }, 500));
+    }, 100));
+}
+
+/**
+ * Calculates how far a tile should move in a direction given current board state
+ * @param i
+ * @param j
+ */
+function getMoveAmount(i: number, j: number): number {
+
+    return 0;
 }
 
 function addAnimationClass() {
     const tiles = document.getElementsByClassName('active-tile');
-    if (lastMove.value === 'left') {
-        for (const tile of tiles) {
-            tile.classList.add('move-left-1');
-        }
+    for (const tile of tiles) {
+        const tileId = tile.id.split('-');
+        const rowNum = Number(tileId[1]);
+        const colNum = Number(tileId[2]);
+        /**
+         * Still need to do checks of how far tile can go
+         */
+        const moveAmt = getMoveAmount(rowNum, colNum);
+        tile.classList.add(`move-${lastMove.value}-${moveAmt}`);
     }
 }
 
@@ -50,6 +65,7 @@ function setTiles() {
                 const innerTile = document.createElement('div');
                 innerTile.classList.add(`bg-${game.value.state[i][j]}`, 'active-tile');
                 innerTile.innerText = game.value.state[i][j].toString();
+                innerTile.id = `tile-${i}-${j}`;
                 tile.appendChild(innerTile);
             }
         }
