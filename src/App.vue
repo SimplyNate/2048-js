@@ -75,6 +75,41 @@ function getMoveAmount(i: number, j: number): number {
     return 0;
 }
 
+/**
+ * Selection should be ordered such that 0 is the edge and 3 is the far side.
+ * E.g. If the lastMove is left:
+ * ```
+ * selection = [tile0, tile1, tile2, tile3]
+ * ```
+ * If the lastMove is right:
+ * ```
+ * selection = [tile3, tile2, tile1, tile0]
+ * ```
+ * @param selection
+ */
+function iterateRow(selection: number[]) {
+    const result = [];
+    for (let i = 0; i < selection.length; i++) {
+        if (selection[i] === 0) {
+            continue;
+        }
+        for (let j = 0; j < i; j++) {
+            if (selection[j] === 0) {
+                result.push({i, j, css: `move-${lastMove.value}-${i-j}`});
+                selection[j] = selection[i];
+                selection[i] = 0;
+                break;
+            }
+            if (selection[j] === selection[i]) {
+                result.push({i, j, css: `move-${lastMove.value}-${i-j}`});
+                selection[j] = selection[i];
+                selection[i] = 0;
+                break;
+            }
+        }
+    }
+}
+
 function addAnimationClass() {
     const tiles = document.getElementsByClassName('active-tile');
     for (const tile of tiles) {
