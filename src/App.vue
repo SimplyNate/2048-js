@@ -88,39 +88,82 @@ function getMoveAmount(i: number, j: number): number {
  * @param selection
  */
 function iterateRow(selection: number[]) {
-    const result = [];
+    const result: {i: number, css: string}[] = [];
     for (let i = 0; i < selection.length; i++) {
         if (selection[i] === 0) {
             continue;
         }
         for (let j = 0; j < i; j++) {
             if (selection[j] === 0) {
-                result.push({i, j, css: `move-${lastMove.value}-${i-j}`});
+                result.push({i, css: `move-${lastMove.value}-${i-j}`});
                 selection[j] = selection[i];
                 selection[i] = 0;
                 break;
             }
             if (selection[j] === selection[i]) {
-                result.push({i, j, css: `move-${lastMove.value}-${i-j}`});
+                result.push({i, css: `move-${lastMove.value}-${i-j}`});
                 selection[j] = selection[i];
                 selection[i] = 0;
                 break;
             }
         }
     }
+    return result;
 }
 
 function addAnimationClass() {
-    const tiles = document.getElementsByClassName('active-tile');
-    for (const tile of tiles) {
-        const tileId = tile.id.split('-');
-        const rowNum = Number(tileId[1]);
-        const colNum = Number(tileId[2]);
-        /**
-         * Still need to do checks of how far tile can go
-         */
-        const moveAmt = getMoveAmount(rowNum, colNum);
-        tile.classList.add(`move-${lastMove.value}-${moveAmt}`);
+    const results: {i: number, j: number, css: string}[] = [];
+    if (lastMove.value === 'left') {
+        for (let i = 0; i < game.value.state.length; i++) {
+            const selection = [];
+            for (let j = 0; j < game.value.state[i].length; j++) {
+                selection.push(game.value.state[i][j]);
+            }
+            const a = iterateRow(selection);
+            results.push(...a.map(r => {
+                return { i, j: r.i, css: r.css };
+            }));
+        }
+    }
+    else if (lastMove.value === 'right') {
+        for (let i = 0; i < game.value.state.length; i++) {
+            const selection = [];
+            for (let j = game.value.state[i].length - 1; j >= 0; j--) {
+                selection.push(game.value.state[i][j]);
+            }
+            const a = iterateRow(selection);
+            results.push(...a.map(r => {
+                return { i, j: r.i, css: r.css };
+            }));
+        }
+    }
+    else if (lastMove.value === 'up') {
+        for (let j = 0; j < game.value.state[0].length; j++) {
+            const selection = [];
+            for (let i = 0; i < game.value.state.length; i++) {
+                selection.push(game.value.state[i][j]);
+            }
+            const a = iterateRow(selection);
+            results.push(...a.map(r => {
+                return { i: r.i, j, css: r.css };
+            }));
+        }
+    }
+    else if (lastMove.value === 'down') {
+        for (let j = 0; j < game.value.state[0].length; j++) {
+            const selection = [];
+            for (let i = game.value.state.length - 1; i >= 0; i--) {
+                selection.push(game.value.state[i][j]);
+            }
+            const a = iterateRow(selection);
+            results.push(...a.map(r => {
+                return { i: r.i, j, css: r.css };
+            }));
+        }
+    }
+    for (const res of results) {
+        const tile = document.getElementById(`tile-${res.i}-${res.j}`) as HTMLElement;
+        tile.classList.add(res.css);
     }
 }
 

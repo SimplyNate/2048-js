@@ -160,14 +160,14 @@ export class Game {
         }
         return somethingHappened;
     }
-    private selectRow(row: number): Tile[] {
+    selectRow(row: number): Tile[] {
         const selection: Tile[] = [];
         for (let j = 0; j < this.state[row].length; j++) {
             selection.push({i: row, j});
         }
         return selection;
     }
-    private selectColumn(column: number): Tile[] {
+    selectColumn(column: number): Tile[] {
         const selection: Tile[] = [];
         for (let i = 0; i < this.state.length; i++) {
             selection.push({i, j: column});
@@ -266,36 +266,5 @@ export class Game {
             }
         }
         return somethingHappened;
-    }
-}
-
-export class GameCanvas {
-    private canvas: HTMLCanvasElement;
-    private ctx: CanvasRenderingContext2D;
-    private game: Game;
-    private container: HTMLElement;
-    private tiles: Tile2[][];
-
-    constructor(container: HTMLElement, canvas?: HTMLCanvasElement) {
-        this.container = container;
-        if (canvas) {
-            this.canvas = canvas;
-        }
-        else {
-            this.canvas = document.createElement('canvas');
-            this.canvas.width = this.container.clientWidth;
-            this.canvas.height = this.container.clientHeight;
-            this.container.appendChild(this.canvas);
-        }
-        this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.game = new Game();
-    }
-    drawBoard() {
-
-    }
-    drawTile() {}
-    drawTiles() {}
-    draw() {
-
     }
 }
