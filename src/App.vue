@@ -88,19 +88,25 @@ function getMoveAmount(i: number, j: number): number {
  * @param selection
  */
 function iterateRow(selection: number[]) {
+    // TODO: Track index tile can move to
+    // EX: 4 32 0 4 -> last 4 can move to index 2, but current method it tries to jump to 0
     const result: {i: number, css: string}[] = [];
     for (let i = 0; i < selection.length; i++) {
         if (selection[i] === 0) {
             continue;
         }
         for (let j = 0; j < i; j++) {
-            if (selection[j] === 0) {
-                result.push({i, css: `move-${lastMove.value}-${i-j}`});
-                selection[j] = selection[i];
-                selection[i] = 0;
-                break;
-            }
-            if (selection[j] === selection[i]) {
+            if (selection[j] === 0 || selection[j] === selection[i]) {
+                // check if move has blocking pieces
+                let bad = false;
+                for (let k = j + 1; k < i; k++) {
+                    if (selection[k] !== 0) {
+                        bad = true;
+                    }
+                }
+                if (bad) {
+                    continue;
+                }
                 result.push({i, css: `move-${lastMove.value}-${i-j}`});
                 selection[j] = selection[i];
                 selection[i] = 0;
@@ -133,7 +139,8 @@ function addAnimationClass() {
             }
             const a = iterateRow(selection);
             results.push(...a.map(r => {
-                return { i, j: r.i, css: r.css };
+                // Invert because iterating backwards
+                return { i, j: (game.value.state[i].length - 1 - r.i), css: r.css };
             }));
         }
     }
@@ -157,10 +164,11 @@ function addAnimationClass() {
             }
             const a = iterateRow(selection);
             results.push(...a.map(r => {
-                return { i: r.i, j, css: r.css };
+                return { i: game.value.state.length - 1 - r.i, j, css: r.css };
             }));
         }
     }
+    console.log(results);
     for (const res of results) {
         const tile = document.getElementById(`tile-${res.i}-${res.j}`) as HTMLElement;
         tile.classList.add(res.css);
