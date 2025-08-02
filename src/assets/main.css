@@ -144,41 +144,55 @@
 
 .active-tile {
     transition: transform 0.1s ease-out;
+    position: absolute;
+    width: 100%;
 }
 
 .move-left-1 {
     transform: translateX(-100%);
+    z-index: 10;
 }
 .move-left-2 {
     transform: translateX(-200%);
+    z-index: 10;
 }
 .move-left-3 {
     transform: translateX(-300%);
+    z-index: 10;
 }
 .move-right-1 {
     transform: translateX(100%);
+    z-index: 10;
 }
 .move-right-2 {
     transform: translateX(200%);
+    z-index: 10;
 }
 .move-right-3 {
     transform: translateX(300%);
+    z-index: 10;
 }
 .move-up-1 {
     transform: translateY(-100%);
+    z-index: 10;
 }
 .move-up-2 {
     transform: translateY(-200%);
+    z-index: 10;
 }
 .move-up-3 {
     transform: translateY(-300%);
+    z-index: 10;
 }
 .move-down-1 {
     transform: translateY(100%);
+    z-index: 10;
 }
 .move-down-2 {
     transform: translateY(200%);
+    z-index: 10;
 }
 .move-down-3 {
     transform: translateY(300%);
+    z-index: 10;
 }

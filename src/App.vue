@@ -24,60 +24,8 @@ function wait(): Promise<void> {
 }
 
 /**
- * Calculates how far a tile should move in a direction given current board state
- * @param i
- * @param j
- */
-function getMoveAmount(i: number, j: number): number {
-    if (lastMove.value === 'left') {
-        if (j > 0) {
-            const state = game.value.state[i][j];
-            if (state === game.value.state[i][j-1] || game.value.state[i][j-1] === 0) {
-                return 1;
-            }
-            /*
-            if (j === 1 && (state === game.value.state[i][j-1] || game.value.state[i][j-1] === 0)) {
-                return 1;
-            }
-            else if (j === 2 && (state === game.value.state[i][j-1] || game.value.state[i][j-1] === 0)) {
-                return 1;
-            }
-            else if (j === 3 && (state === game.value.state[i][j-1] || game.value.state[i][j-1] === 0)) {
-                return 1;
-            }
-             */
-        }
-    }
-    else if (lastMove.value === 'right') {
-        if (j < game.value.state[i].length - 1) {
-            const state = game.value.state[i][j];
-            if (state === game.value.state[i][j+1] || game.value.state[i][j+1] === 0) {
-                return 1;
-            }
-        }
-    }
-    else if (lastMove.value === 'up') {
-        if (i > 0) {
-            const state = game.value.state[i][j];
-            if (state === game.value.state[i-1][j] || game.value.state[i-1][j] === 0) {
-                return 1;
-            }
-        }
-    }
-    else if (lastMove.value === 'down') {
-        if (i < game.value.state.length - 1) {
-            const state = game.value.state[i][j];
-            if (state === game.value.state[i + 1][j] || game.value.state[i + 1][j] === 0) {
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-
-/**
  * Selection should be ordered such that 0 is the edge and 3 is the far side.
- * E.g. If the lastMove is left:
+ * E.g., If the lastMove is left:
  * ```
  * selection = [tile0, tile1, tile2, tile3]
  * ```
@@ -88,7 +36,6 @@ function getMoveAmount(i: number, j: number): number {
  * @param selection
  */
 function iterateRow(selection: number[]) {
-    // TODO: Track index tile can move to
     // EX: 4 32 0 4 -> last 4 can move to index 2, but current method it tries to jump to 0
     const result: {i: number, css: string}[] = [];
     for (let i = 0; i < selection.length; i++) {
@@ -97,7 +44,7 @@ function iterateRow(selection: number[]) {
         }
         for (let j = 0; j < i; j++) {
             if (selection[j] === 0 || selection[j] === selection[i]) {
-                // check if move has blocking pieces
+                // check if the move has blocking pieces
                 let bad = false;
                 for (let k = j + 1; k < i; k++) {
                     if (selection[k] !== 0) {
