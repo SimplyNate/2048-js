@@ -105,7 +105,7 @@
     font-size: 1rem;
 }
 .fs-2 {
-    font-size: 2rem;
+    font-size: 3vmax;
 }
 .fw-bold {
     font-weight: bold;
@@ -195,4 +195,8 @@
 .move-down-3 {
     transform: translateY(300%);
     z-index: 10;
+}
+
+.pointer-events-none {
+    pointer-events: none;
 }

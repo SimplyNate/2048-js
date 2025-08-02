@@ -115,7 +115,6 @@ function addAnimationClass() {
             }));
         }
     }
-    console.log(results);
     for (const res of results) {
         const tile = document.getElementById(`tile-${res.i}-${res.j}`) as HTMLElement;
         tile.classList.add(res.css);
@@ -147,6 +146,30 @@ function setTiles() {
     }
 }
 
+const touchStart = ref({x: 0, y: 0});
+const touchEnd = ref({x: 0, y: 0});
+
+function setDirectionByTouch() {
+    const x = touchEnd.value.x - touchStart.value.x;
+    const y = touchEnd.value.y - touchStart.value.y;
+    if (Math.abs(x) > Math.abs(y)) {
+        if (x > 0) {
+            step('right');
+        }
+        else if (x < 0) {
+            step('left');
+        }
+    }
+    else {
+        if (y > 0) {
+            step('down');
+        }
+        else if (y < 0) {
+            step('up');
+        }
+    }
+}
+
 onMounted(() => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
@@ -162,6 +185,13 @@ onMounted(() => {
             step('down');
         }
     });
+    document.addEventListener('touchstart', (e) => {
+        touchStart.value = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+    });
+    document.addEventListener('touchend', (e) => {
+        touchEnd.value = {x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY};
+        setDirectionByTouch();
+    });
     setTiles();
 });
 
@@ -176,24 +206,19 @@ onMounted(() => {
             <div>Animating: {{ animating }}</div>
             <button @click="resetGame">Reset</button>
         </div>
-        <div class="mt-5 fs-2 fw-bold flex-grow-1">
+        <div class="mt-5 fs-2 fw-bold flex-grow-1 pointer-events-none">
             <div class="d-flex justify-content-center position-relative" v-for="i in game.state.length" :key="i">
                 <div class="border border-dark bg-0 w-5 position-relative" :id="`row-${i-1}-${j-1}`" v-for="j in game.state[i-1].length" :key="j"></div>
             </div>
-            <!--
-            <div class="d-flex justify-content-center" v-for="i in 4" :key="i">
-                <div v-for="j in 4" :key="j" :class="`border border-dark w-5 bg-${game.state[i-1][j-1]}`">{{ game.state[i-1][j-1] > 0 ? game.state[i-1][j-1] : '' }}</div>
-            </div>
-            -->
         </div>
     </div>
 </template>
 
 <style scoped>
 .w-5 {
-    width: 5vw;
-    height: 5vw;
-    line-height: 5vw;
+    width: 10vmax;
+    height: 10vmax;
+    line-height: 10vmax;
 }
 
 </style>
